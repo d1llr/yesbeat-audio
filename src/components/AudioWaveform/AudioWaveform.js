@@ -1,16 +1,13 @@
 import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
-import TimelinePlugin from 'wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js';
-import RegionsPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min.js';
-import { FileContext } from '../contexts/fileContext';
+import { FileContext } from '../../contexts/fileContext';
 import wavesurfer from 'wavesurfer.js';
 import Forward10Icon from '@mui/icons-material/Forward10';
-import ToggleButton from './ToggleButton';
 import Replay10Icon from '@mui/icons-material/Replay10';
-import Photo from '../components/Photo';
-import Blur from '../components/Blur';
+import Photo from '../Photo/Photo';
+import Blur from '../Blur/Blur';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import SpeedIcon from '@mui/icons-material/Speed';
-
+import AudioCSS from '../AudioWaveform/AudioWaveform.module.css'
 import { Slider } from '@mui/material';
 
 

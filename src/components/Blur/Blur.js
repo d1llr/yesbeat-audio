@@ -1,7 +1,9 @@
 import React from 'react'
+import BlurCSS from './Blur.module.css'
+
 
 export default React.memo(function Blur() {
   return (
-    <div className='blur'></div>
+    <div className={BlurCSS}></div>
   )
 })

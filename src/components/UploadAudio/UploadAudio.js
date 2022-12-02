@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import { FileContext } from '../contexts/fileContext';
+import { FileContext } from '../../contexts/fileContext';
 
 const UploadAudio = ({ history }) => {
 	const inputFile = useRef(null);

@@ -4,9 +4,9 @@ import WarningIcon from '@mui/icons-material/Warning';
 import TelegramIcon from '@mui/icons-material/Telegram';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 
-const Navbar = () => {
+const Header = () => {
 	return (
-		<nav>
+		<Header>
 			<div className='first'>
 				<div className='brand'>
 					<img src={logo} />
@@ -33,8 +33,8 @@ const Navbar = () => {
 				</button>
 			</div>
 
-		</nav>
+		</Header>
 	);
 };
 
-export default Navbar;
+export default Header;

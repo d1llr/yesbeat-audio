@@ -1,7 +1,5 @@
 import React from 'react';
-import AudioWaveform from '../components/AudioWaveform';
-import Photo from '../components/Photo';
-import Blur from '../components/Blur';
+import AudioWaveform from '../components/AudioWaveform/AudioWaveform.js';
 
 
 const EditPage = () => {

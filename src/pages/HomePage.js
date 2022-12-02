@@ -1,5 +1,5 @@
 import React from 'react';
-import UploadAudio from '../components/UploadAudio';
+import UploadAudio from '../components/UploadAudio/UploadAudio';
 
 const HomePage = ({ history }) => {
 	return (
