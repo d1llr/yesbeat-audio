@@ -1,31 +1,34 @@
 import React from 'react';
-import logo from './logo.jpg'
+import logotype from './logo.png'
 import WarningIcon from '@mui/icons-material/Warning';
 import TelegramIcon from '@mui/icons-material/Telegram';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import HeaderCSS from './Header.module.scss'
+
+
 
 const Header = () => {
 	return (
-		<Header>
-			<div className='first'>
-				<div className='brand'>
-					<img src={logo} />
+		<header>
+			<div className={HeaderCSS.first}>
+				<div className={HeaderCSS.brand}>
+					<img src={logotype} />
 				</div>
-				<div className='warning'>
+				<div className={HeaderCSS.warning}>
 					<WarningIcon />
 					<span>
 						<b>Запрещено</b> распространять музыку и выкладывать в соц. сети
 					</span>
 				</div>
 			</div>
-			<div className='second'>
-				<button className='telegram'>
+			<div className={HeaderCSS.second}>
+				<button className={HeaderCSS.telegram}>
 					<TelegramIcon/>
 					<span>
 						Отправить в Telegram
 					</span>
 				</button>
-				<button className='download'>
+				<button className={HeaderCSS.download}>
 					<FileDownloadIcon sx={{ color: 'black' }}/>
 					<span>
 						Скачать
@@ -33,7 +36,7 @@ const Header = () => {
 				</button>
 			</div>
 
-		</Header>
+		</header>
 	);
 };
 

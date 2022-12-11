@@ -1,0 +1,25 @@
+.volume_slide_container {
+    display: flex;
+    position: relative;
+    flex-direction: column-reverse;
+    align-items: center;
+    margin: 0 1em;
+    font-size: 28px;
+    .slider_wrapper_visible {
+        position: absolute;
+        opacity: 1;
+        display: block;
+        margin-bottom: 20px;
+        height: 100px;
+        z-index: 2;
+        transition: all .4s;
+        padding-bottom: 0.5em;
+    }
+    .slider_wrapper {
+        position: absolute;
+        transition: all .4s;
+        opacity: 0;
+        z-index: -1;
+        margin-bottom: 40px;
+    }
+}

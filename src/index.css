@@ -1,3 +1,6 @@
+
+@import-normalize;
+
 @font-face {
   font-family: Roboto;
   src: url('/src/fonts/Roboto-Regular.ttf');
@@ -20,302 +23,9 @@ body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  height: 100%;
-  width: 100%;
+  /* padding: 2em; */
   font-family: "Roboto";
 }
-
-/* style for the upload audio component */
-.upload-audio {
-  width: 100%;
-  margin-top: 5vh;
-  display: flex;
-  flex-flow: column nowrap;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.upload-audio i.audio-icon {
-  font-size: 5em;
-}
-
-/* the container where wavesurfer adds the audio waveform */
-.waveform-container {
-  display: flex;
-  width: 70%;
-  flex-direction: column;
-  align-items: center;
-}
-.waveform-wrapper {
-  width: 100%;
-  height: 400px;
-  justify-content: space-between;
-  align-items: center;
-  display: flex;
-  background-image: url("./components/Photo/photo.jpg");
-  background-position: left;
-  background-size: cover;
-  padding: 3em;
-  position: relative;
-  overflow: hidden;
-  border-radius: .5em;
-  flex-direction: row;
-}
-
-.timeline{
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-}
-.timeline .values{
-  background-color: #4c5866;
-  width: 300px;
-  height: 2px;
-  cursor: pointer;
-}
-.timeline span{
-  color: white;
-  padding: 1em;
-  font-size: 15px;
-}
-.timeline .values .fill{
-  position: relative;
-  height: 100%;
-  background-color: #d15161;
-}
-.disabled{
-  opacity: 0.4;
-  pointer-events: none;
-}
-main {
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-around;
-  margin: 0 auto;
-  overflow: hidden;
-}
-.blur {
-  backdrop-filter: blur(10px);
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 1;
-}
-
-.timings {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  color: #ffffff;
-  font-size: 15px;
-  margin-top: 5px;
-}
-.timings .currentTime {
-  background-color: #e34759;
-  padding: 0.1em 0.2em;
-  border-radius: 5px;
-}
-.timings .duration {
-  background-color: #23262d;
-  padding: 0.1em 0.2em;
-}
-main .photo {
-  width: 450px;
-  height: 100%;
-  background-color: #31a7dc;
-  text-align: center;
-  border-radius: .5em;
-  z-index: 2;
-  overflow: hidden;
-}
-main .photo img {
-  width: 100%;
-  height: 100%;
-}
-.waveform-inner-wrapper {
-  flex-grow: 1;
-  z-index: 2;
-  margin-right: 50px;
-}
-.waveform-inner-wrapper .text {
-  display: flex;
-  flex-direction: row;
-  color: #ffffff;
-  justify-content: space-between;
-  margin-bottom: 50px;
-}
-.waveform-inner-wrapper .text .first-text {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-.waveform-inner-wrapper .text .first-text h1 {
-  margin: 0;
-  color: #ffffff;
-}
-.waveform-inner-wrapper .text .second-text {
-  display: flex;
-  flex-direction: column;
-  text-align: right;
-  justify-content: space-evenly;
-}
-.waveform-inner-wrapper .text .second-text .date{
-}
-.waveform-inner-wrapper .text .second-text .hashtag{
-  background-color: #3b97e3;
-  border-radius: 3px;
-  text-align: center;
-  line-height: 1.5em;
-  padding: 0.1em;
-}
-/* style for the navbar */
-nav {
-  display: flex;
-  align-items: center;
-  flex-direction: row;
-  justify-content: space-between;
-  height: 3.5em;
-  padding: 0 2em;
-  background-color: #ffffff;
-  font-size: large;
-  font-weight: bold;
-  font-size: 20px;
-}
-
-.first {
-  display: flex;
-}
-nav > .brand {
-  display: flex;
-  color: white;
-  align-items: center;
-}
-nav .warning {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin-left: 100px;
-  color: #dddee0;
-  font-size: 18px;
-  font-weight: normal;
-}
-nav .warning svg {
-  margin-right: 10px;
-}
-nav .warning b {
-  color: #babfc3;
-}
-
-.second {
-  display: flex;
-  flex-direction: row;
-}
-.telegram {
-  background-color: #31a7dc;
-  display: flex;
-  height: fit-content;
-  flex-direction: row;
-  align-items: center;
-  border-radius: 5px;
-  color: white;
-  padding: 0.2em 1em;
-  font-size: 17px;
-  font-weight: lighter;
-}
-.telegram svg{
-  margin-right: 5px;
-}
-.download {
-  background-color: #e8edf1;
-  display: flex;
-  height: fit-content;
-  flex-direction: row;
-  align-items: center;
-  border-radius: 5px;
-  color: rgb(0, 0, 0);
-  padding: 0.2em 1em;
-  margin-left: 10px;
-  font-size: 17px;
-}
-
-.download svg{
-  width: 25px;
-}
-
-#waveform {
-  height: 300px;
-  overflow: hidden;
-}
-nav a {
-  text-decoration: none;
-  color: inherit;
-}
-
-/* all icons */
-i.material-icons {
-  font-size: 1.5em;
-  color: #ffffff;
-}
-
-h1 {
-  color: #1d0b22;
-}
-
-/* style for the upload button */
-button.upload-btn {
-  width: 10em;
-  font-size: 1em;
-  padding: 0.5em;
-  background: #5b266b;
-  border-radius: 999px;
-  color: white;
-  border-color: #5b266b;
-  cursor: pointer;
-}
-
-button.upload-btn:hover {
-  filter: brightness(1.1);
-}
-
-/* style for the trim button */
-.trim {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  background: #1d0b22;
-  color: white;
-  width: 5em;
-  border-radius: 2px;
-  cursor: pointer;
-  padding: 0.25em;
-  border: 1px solid rebeccapurple;
-}
-
-/* all the button controls */
-div.all-controls {
-  margin: 2em auto;
-  max-width: 60vw;
-  display: flex;
-  z-index: 2;
-  align-items: center;
-  justify-content: space-around;
-  background-color: #23262d;
-  border-radius: 5px;
-}
-
-.all-controls .right-container,
-.all-controls .left-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
-  width: 50%;
-}
-
 button {
   border: none;
   background: transparent;
@@ -323,7 +33,6 @@ button {
   font-size: 1.2em;
 }
 
-/* style for both sliders */
 .slider {
   -webkit-appearance: none;
   appearance: none;
@@ -359,9 +68,10 @@ button {
   cursor: pointer;
   border-radius: 50%;
 }
-.slider-wrapper{
+.slider_wrapper{
   position: absolute;
   opacity: 0;
+  display: none;
   margin-bottom: 40px;
   height: 150px;
 }
@@ -373,10 +83,11 @@ button {
 }
 .visible{
   opacity: 1;
+  display: block;
 }
 .volume-slide-container {
   display: flex;
   position: relative;
   flex-direction: column-reverse;
   align-items: center;
-}
+} 
