@@ -1,16 +1,14 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import HomePage from './pages/HomePage';
+import { BrowserRouter,Routes, Route } from 'react-router-dom';
 import EditPage from './pages/EditPage';
 
 const App = () => {
 	return (
-		<Router>
-			<Switch>
-				<Route path='/' component={HomePage} exact />
-				<Route path='/edit' component={EditPage} exact />
-			</Switch>
-		</Router>
+		<BrowserRouter>
+			<Routes>
+				<Route path='/' element={<EditPage />} exact />
+			</Routes>
+		</BrowserRouter>
 	);
 };
 

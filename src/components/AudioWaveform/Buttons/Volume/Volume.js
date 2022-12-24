@@ -23,12 +23,12 @@ export default memo(function Volume(props) {
 		props.setVolume(e.target.value / 100);
 	});
     return (
-        <div className={AudioCSS.volume_slide_container} ref={slider} onMouseEnter={handleVolumeSliderShow}>
+        <section className={AudioCSS.volume_slide_container} ref={slider} onMouseEnter={handleVolumeSliderShow}>
             <img src={VolumePhoto} />
             <div className={AudioCSS.slider_wrapper} ref={sliderWrapper}>
                 <Slider orientation="vertical" aria-label="Volume" defaultvalue={props.volume} onChange={handleVolumeSlider} />
             </div>
 
-        </div>
+        </section>
     )
 })

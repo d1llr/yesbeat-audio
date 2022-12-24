@@ -15,14 +15,18 @@ export default memo(function Skip(props) {
     }
     if (props.direction == 'forward')
         return (
-            <button onClick={(e) => handleSkip(10)} >
-                <img src={Forw10sec} />
-            </button>
+            <section>
+                <button onClick={(e) => handleSkip(10)} >
+                    <img src={Forw10sec} />
+                </button>
+            </section>
         )
     else
         return (
-            <button onClick={(e) => handleSkip(-10)} >
-                <img src={Back10sec} />
-            </button>
+            <section>
+                <button onClick={(e) => handleSkip(-10)} >
+                    <img src={Back10sec} />
+                </button>
+            </section>
         )
 })

@@ -1,49 +1,53 @@
-import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
-import { FileContext } from '../../contexts/fileContext';
+import React, { useState, useEffect, useContext, useRef, useMemo } from 'react';
 import wavesurfer from 'wavesurfer.js';
+import { json, useParams } from 'react-router-dom';
+import { useSearchParams } from "react-router-dom";
 import Photo from '../Photo/Photo';
 import Blur from '../Blur/Blur';
 import Volume from './Buttons/Volume/Volume';
 import AudioCSS from '../AudioWaveform/AudioWaveform.module.scss'
 import ListPhoto from '../../imgs/list.png'
-import fullScreen from '../../imgs/fullscreen.png'
+import fullScreenPhoto from '../../imgs/fullscreen.png'
 import PlayPause from './Buttons/PlayPause';
 import Skip10sec from './Buttons/Skip10sec';
 import Speed from './Buttons/Speed';
 import Header from '../Header/Header';
-import logotype from '../Header/logo.png'
-import WarningIcon from '@mui/icons-material/Warning';
-import TelegramIcon from '@mui/icons-material/Telegram';
-import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import  Fullscreen_minimize  from '../../imgs/fullscreen_minimize.png';
-
-
-
+import Timings from './TimerComponent/Timings';
+import FullScreen from './FullScreenMode/FullScreen';
 const AudioWaveform = React.memo(() => {
 	let props = {}
+	const src = "https://s3.eu-central-1.amazonaws.com/some-sprouts/Mindcrush.mp3";
 	const wavesurferRef = useRef(null);
 	const fill = useRef(null);
 	const inDev = useRef(null)
+	const [pageLoad, setPageLoad] = useState(true)
 	const [rate, setRate] = useState(1)
 	const [currentTime, setCurrentTime] = useState()
 	const [maxTime, setMaxTime] = useState()
-	// fetch file url from the context
-	const { fileURL, setFileURL } = useContext(FileContext);
-	const [fullscreen, setFullscreen] = useState(false)
-	// crate an instance of the wavesurfer
+	const [fullScreen, setfullScreen] = useState(() => {
+		if (window.innerWidth < 1500) {
+			return true
+		}
+		else {
+			return false
+		}
+	})
+	const MyLoaderRef = useRef(null)
+	const [machine, setMachine] = useState(true)
 	const [wavesurferObj, setWavesurferObj] = useState();
-
 	const [playing, setPlaying] = useState(true); // to keep track whether audio is currently playing or not
 	const [volume, setVolume] = useState(0.1); // to control volume level of the audio. 0-mute, 1-max
-	const [zoom, setZoom] = useState(0); // to control the zoom level of the waveform
-	const [duration, setDuration] = useState(0); // duration is used to set the default region of selection for trimming the audio
-
+	const [currentProgress, setCurrentProgress] = useState(0)
 	// create the waveform inside the correct component
+
+	const params = useParams()
+	const [searchParams, setSearchParams] = useSearchParams();
 	useEffect(() => {
 		if (wavesurferRef.current && !wavesurferObj) {
+			setPageLoad(true)
 			setWavesurferObj(
 				wavesurfer.create({
-					container: '#waveform',
+					container: wavesurferRef.current,
 					scrollParent: false,
 					autoCenter: true,
 					height: 600,
@@ -58,8 +62,12 @@ const AudioWaveform = React.memo(() => {
 					interact: true,
 				})
 			)
+			console.log('Создано');
 		}
-	}, [wavesurferRef, wavesurferObj, fullscreen]);
+		// if (window.innerWidth <= 1700) {
+		// 	setfullScreen(true)
+		// }
+	}, [wavesurferRef, wavesurferObj]);
 
 	// useEffect(() => {
 	// 	if (duration && wavesurferObj) {
@@ -83,11 +91,21 @@ const AudioWaveform = React.memo(() => {
 
 	// once the file URL is ready, load the file to produce the waveform
 	useEffect(() => {
-		if (fileURL && wavesurferObj) {
-			wavesurferObj.load(fileURL);
+		if (wavesurferObj) {
+			console.log(searchParams.get('name'));
+			searchParams.get('name') ? 
+				fetch(`https://test.yesbeat.ru/player_file.php?&data=${searchParams.get('name')}`)
+				  .then(res => res.json())
+				  .then(
+					(result) => {
+						console.log(JSON.parse(result));
+					}
+				  )
+				:
+			console.log('Нет');
+			wavesurferObj.load(src);
 		}
-		console.log(window);
-	}, [fileURL, wavesurferObj, fullscreen]);
+	}, [wavesurferObj]);
 
 
 	//timing functions
@@ -95,12 +113,15 @@ const AudioWaveform = React.memo(() => {
 		if (wavesurferObj) {
 			// once the waveform is ready, play the audio
 			wavesurferObj.on('ready', () => {
-				wavesurferObj.play();
-				console.log('ready');
-				let sec = wavesurferObj.getDuration()
-				setMaxTime(Math.floor(sec / 60) + ':' + Math.floor(sec % 60));
-				wavesurferObj.enableDragSelection({}); // to select the r egion to be trimmed
-				setDuration(Math.floor(wavesurferObj.getDuration())); // set the duration in local state
+				setTimeout(() => {
+					setPageLoad(false)
+					wavesurferObj.play();
+					wavesurferObj.seekTo(currentProgress)
+					console.log('ready');
+					let sec = wavesurferObj.getDuration()
+					setMaxTime(Math.floor(sec / 60) + ':' + Math.floor(sec % 60));
+					// wavesurferObj.enableDragSelection({}); // to select the r egion to be trimmed
+				}, 500);
 
 			});
 			// once audio starts playing, set the state variable to true
@@ -128,44 +149,38 @@ const AudioWaveform = React.memo(() => {
 	// 	})
 	// })
 
-	const innerFunc = useCallback(() => {
+	const innerFunc = () => {
 		if (wavesurferObj) {
 			let timer
 			let width
 			wavesurferObj.on('play', () => {
-				timer = setInterval(() => {
-					if (wavesurferObj) {
+				if (wavesurferObj)
+					timer = setInterval(() => {
 						setCurrentTime(Math.floor(wavesurferObj.getCurrentTime() / 60) + ':' + Math.floor(wavesurferObj.getCurrentTime() % 60))
 						width = Math.floor(wavesurferObj.getCurrentTime() / wavesurferObj.getDuration() * 100)
-						console.log(fill.current);
-						fill.current != null ? fill.current.style.width = width + 1 + '%' : console.log('fullscreen');
-						if(window.innerWidth <=1600){
-							setFullscreen(true)
-						}
-						else {
-							setFullscreen(false)
-						}
-					}
-				}, 1000);
+						fill.current != null ? fill.current.style.width = width + 1 + '%' : console.log('fullScreen');
+						console.log('Работа setInterval`a');
+					}, 1000);
 			});
 			wavesurferObj.on('pause', () => {
 				clearInterval(timer)
-			}) 
+			})
 		}
-	})
+	}
 
 	useEffect(() => {
 		innerFunc()
-	}, [innerFunc]);
+		console.log('Вызов innerfunc');
+	}, [wavesurferObj]);
 	useEffect(() => {
 		if (wavesurferObj)
 			wavesurferObj.on('seek', (e) => {
 				let t = Math.floor(wavesurferObj.getDuration() * e.toFixed(2))
 				setCurrentTime(Math.floor(t / 60) + ':' + Math.floor(t % 60))
 				console.log('sekked')
-				fill.current != null ? fill.current.style.width = e.toFixed(2) * 100 + '%' : console.log('fullscreen');
+				fill.current != null ? fill.current.style.width = e.toFixed(2) * 100 + '%' : console.log('fullScreen');
 			})
-	})
+	}, [wavesurferObj])
 
 	// set volume of the wavesurfer object, whenever volume variable in state is changed
 	useEffect(() => {
@@ -202,85 +217,55 @@ const AudioWaveform = React.memo(() => {
 		})
 		inDev.current.className = AudioCSS.in_dev
 	}
-
-	const handleFullscreen = (e) => {
-		setFullscreen(prev => !prev)
+	const handlefullScreen = (e) => {
+		setfullScreen(e)
+		setMachine(false)
+		if (wavesurferObj) {
+			setCurrentProgress(wavesurferObj.getCurrentTime() / wavesurferObj.getDuration())
+			console.log(`${wavesurferObj.getDuration()} - длительность трека`);
+			console.log(`${wavesurferObj.getCurrentTime()} - текущее время`);
+			console.log(`${currentProgress * 100} - результат деления`);
+		}
+		wavesurferObj.pause()
+		wavesurferObj.destroy()
+		setWavesurferObj(null)
+		console.log('handlefullScreen');
 	}
+	// const machinefullScreen = (e) => {
+	// 	setfullScreen(e)
+	// 	setCurrentProgress(wavesurferObj.getCurrentTime() / wavesurferObj.getDuration())
+	// 	console.log(`${wavesurferObj.getDuration()} - длительность трека`);
+	// 	console.log(`${wavesurferObj.getCurrentTime()} - текущее время`);
+	// 	console.log(`${currentProgress * 100} - результат деления`);
+	// 	wavesurferObj.pause()
+	// 	wavesurferObj.destroy()
+	// 	setWavesurferObj(null)
+	// 	console.log('machinefullScreen');
+	// }
 	return (
-		fullscreen ?
-			<section className={AudioCSS.waveform_container_fullscreen}>
-				<section className={AudioCSS.waveform_wrapper_fullscreen}>
-					<div className={AudioCSS.fullscreen_info}>
-						<img src={logotype} className={AudioCSS.logotype} />
-						<span className={AudioCSS.date}>
-							{props.date ? props.date : '5 дней назад'}
-						</span>
-						<h1 className={AudioCSS.name}>
-							{props.name ? props.name : 'Наименование трека'}
-						</h1>
-						<h1 className={AudioCSS.bpm}>
-							{props.info ? props.info : `999 BPM, `}{maxTime}{`,Март 2022`}
-						</h1>
-						<span className={AudioCSS.hashtag}>
-							{props.hashtag ? props.hashtag : '#Музыкадляфитнеса'}
-						</span>
-					</div>
-					<Photo fullscreen={true} />
-					<div ref={wavesurferRef} id="waveform" className={AudioCSS.waveform} />
-					<div className={AudioCSS.timings}>
-						<span className={AudioCSS.currentTime}>
-							{currentTime}
-						</span>
-						<span className={AudioCSS.duration}>
-							{maxTime}
-						</span>
-					</div>
-					<div className={AudioCSS.stopButtons}>
-						<Skip10sec wavesurferObj={wavesurferObj} direction='backward' />
-						<PlayPause wavesurferObj={wavesurferObj} setPlaying={setPlaying} playing={playing} />
-						<Skip10sec wavesurferObj={wavesurferObj} direction='forward' />
-					</div>
-					<div className={AudioCSS.fullscreen}>
-						<img src={Fullscreen_minimize} onClick={() => handleFullscreen()}/>
-					</div>
-
-				</section>
-				<section className={AudioCSS.footer_wrapper}>
-					<section className={AudioCSS.warning}>
-						<WarningIcon />
-						<span>
-							<b>Запрещено</b> распространять музыку и выкладывать в соц. сети
-						</span>
-					</section>
-					<section>
-						<Volume volume={volume} setVolume={setVolume} />
-						<Speed wavesurferObj={wavesurferObj} />
-					</section>
-
-					<section>
-						<img src={ListPhoto} onClick={handleInDevelopment} />
-						<span ref={inDev} className={AudioCSS.in_dev_false}>
-							В разработке
-						</span>
-					</section>
-					<section>
-						<button className={AudioCSS.telegram}>
-							<TelegramIcon />
-							<span>
-								Отправить в Telegram
-							</span>
-						</button>
-						<button className={AudioCSS.download}>
-							<FileDownloadIcon sx={{ color: 'black' }} />
-							<span>
-								Скачать
-							</span>
-						</button>
-					</section>
-				</section>
-			</section> :
+		fullScreen ?
+			<FullScreen
+				wavesurferObj={wavesurferObj}
+				setWavesurferObj={setWavesurferObj}
+				rate={rate}
+				currentTime={currentTime}
+				maxTime={maxTime}
+				playing={playing}
+				setPlaying={setPlaying}
+				handlefullScreen={handlefullScreen}
+				volume={volume}
+				setVolume={setVolume}
+				handleInDevelopment={handleInDevelopment}
+				inDev={inDev}
+				pageLoad = {pageLoad}
+				setPageLoad = {setPageLoad}
+				src={src}
+				machine={machine}
+			/>
+			:
 			<section className={AudioCSS.waveform_container}>
-				<Header />
+				<div className={pageLoad ? AudioCSS.loader : AudioCSS.loader_invisible}></div>
+				<Header src={src} />
 				<div className={AudioCSS.waveform_wrapper}>
 					<div className={AudioCSS.waveform_inner_wrapper}>
 						<div className={AudioCSS.text}>
@@ -288,9 +273,9 @@ const AudioWaveform = React.memo(() => {
 								<h1>
 									{props.name ? props.name : 'Наименование трека'}
 								</h1>
-								<h1>
+								<h2>
 									{props.info ? props.info : `999 BPM, `}{maxTime}{`,Март 2022`}
-								</h1>
+								</h2>
 							</div>
 							<div className={AudioCSS.second_text}>
 								<span className={AudioCSS.date}>
@@ -301,26 +286,23 @@ const AudioWaveform = React.memo(() => {
 								</span>
 							</div>
 						</div>
-						<div ref={wavesurferRef} id="waveform" className={AudioCSS.waveform} />
-						<div className={AudioCSS.timings}>
-							<span className={AudioCSS.currentTime}>
-								{currentTime}
-							</span>
-							<span className={AudioCSS.duration}>
-								{maxTime}
-							</span>
+						{/* <Waveform
+							/> */}
+						<div>
+							<div ref={wavesurferRef} id="waveform" className={AudioCSS.waveform} />
+							<Timings currentTime={currentTime} maxTime={maxTime} className={AudioCSS} />
 						</div>
+
 					</div>
-					<Photo fullscreen={fullscreen} />
+					<Photo fullScreen={fullScreen} />
 					<Blur />
 				</div>
 				<div className={AudioCSS.all_controls}>
-					<section className={AudioCSS.left_side}>
+					<div className={AudioCSS.left_side}>
 						<PlayPause wavesurferObj={wavesurferObj} setPlaying={setPlaying} playing={playing} />
 						<Skip10sec wavesurferObj={wavesurferObj} direction='backward' />
 						<Skip10sec wavesurferObj={wavesurferObj} direction='forward' />
-
-						<div className={AudioCSS.timeline}>
+						<section className={AudioCSS.timeline}>
 							<span>
 								{currentTime}
 							</span>
@@ -332,11 +314,11 @@ const AudioWaveform = React.memo(() => {
 							<span>
 								{maxTime}
 							</span>
-						</div>
+						</section>
 						<Volume volume={volume} setVolume={setVolume} />
-						<Speed wavesurferObj={wavesurferObj} />
-					</section>
-					<section className={AudioCSS.second_side} >
+						<Speed wavesurferObj={wavesurferObj} className={AudioCSS.speed} />
+					</div>
+					<div className={AudioCSS.second_side} >
 						<div>
 							<img src={ListPhoto} onMouseEnter={handleInDevelopment} />
 							<span ref={inDev} className={AudioCSS.in_dev_false}>
@@ -344,11 +326,11 @@ const AudioWaveform = React.memo(() => {
 							</span>
 						</div>
 						<div>
-							<img src={fullScreen} onClick={() => handleFullscreen()} />
+							<img src={fullScreenPhoto} onClick={() => handlefullScreen(true)} />
 						</div>
 
 
-					</section>
+					</div>
 				</div>
 			</section>
 	);

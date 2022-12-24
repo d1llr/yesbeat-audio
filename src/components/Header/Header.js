@@ -1,43 +1,25 @@
-import React from 'react';
+import React, { memo } from 'react';
 import logotype from './logo.png'
-import WarningIcon from '@mui/icons-material/Warning';
-import TelegramIcon from '@mui/icons-material/Telegram';
-import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import warningIcon from '../../imgs/warning.png'
+import TelegramIcon from '../../imgs/telegram.png';
+import downloadIcon from '../../imgs/download.png';
 import HeaderCSS from './Header.module.scss'
-
-
-
-const Header = () => {
+import Warning from './Components/Warning';
+import Download from './Components/Download';
+import Telegram from './Components/Telegram';
+import Logotype from './Components/Logotype';
+export default memo(function Header(props) {
 	return (
 		<header>
 			<div className={HeaderCSS.first}>
-				<div className={HeaderCSS.brand}>
-					<img src={logotype} />
-				</div>
-				<div className={HeaderCSS.warning}>
-					<WarningIcon />
-					<span>
-						<b>Запрещено</b> распространять музыку и выкладывать в соц. сети
-					</span>
-				</div>
+				<Logotype/>
+				<Warning className = {HeaderCSS.warning}/>
 			</div>
 			<div className={HeaderCSS.second}>
-				<button className={HeaderCSS.telegram}>
-					<TelegramIcon/>
-					<span>
-						Отправить в Telegram
-					</span>
-				</button>
-				<button className={HeaderCSS.download}>
-					<FileDownloadIcon sx={{ color: 'black' }}/>
-					<span>
-						Скачать
-					</span>
-				</button>
+				<Telegram className = {HeaderCSS.telegram}/>
+				<Download src = {props.src} className = {HeaderCSS.download}/>
 			</div>
 
 		</header>
 	);
-};
-
-export default Header;
+})

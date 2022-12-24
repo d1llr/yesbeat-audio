@@ -1,11 +1,10 @@
 header {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     flex-direction: row;
     justify-content: space-between;
-    padding: 0 2em;
+    padding: 1em 1em;
     width: 100%;
-    margin-bottom: 2em;
     background-color: #ffffff;
     font-weight: bold;
     font-size: 20px;
@@ -15,7 +14,7 @@ header {
         .brand {
             display: flex;
             color: white;
-            img{
+            img {
                 width: 100%;
                 height: 100%;
             }
@@ -28,8 +27,9 @@ header {
             color: #dddee0;
             font-size: 18px;
             font-weight: normal;
-            svg {
+            img {
                 margin-right: 10px;
+                margin-bottom: 3px;
             }
             b {
                 color: #babfc3;
@@ -40,6 +40,10 @@ header {
         display: flex;
         flex-direction: row;
         align-items: center;
+        img{
+            height: 20px;
+            object-fit: contain;
+        }
         justify-content: center;
         .telegram {
             background-color: #31a7dc;
@@ -49,12 +53,12 @@ header {
             align-items: center;
             border-radius: 5px;
             color: white;
-            padding: 0.2em 1em;
+            padding: .5em 1em;
             font-size: 17px;
             font-weight: lighter;
-            svg{
+            img {
                 margin-right: 5px;
-              }
+            }
         }
         .download {
             background-color: #e8edf1;
@@ -64,12 +68,17 @@ header {
             align-items: center;
             border-radius: 5px;
             color: rgb(0, 0, 0);
-            padding: 0.2em 1em;
+            padding: 0.5em 1em;
             margin-left: 10px;
             font-size: 17px;
-            svg{
+            text-decoration: none;
+            img {
                 width: 25px;
-              }
-          }
+            }
+            span{
+                text-decoration: none;
+                color: #000;
+            }
+        }
     }
 }

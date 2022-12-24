@@ -1,9 +1,9 @@
-import React,{useState} from 'react'
+import React,{memo, useState} from 'react'
 import SpeedIcon from '../../../imgs/speed.png';
 import AudioCSS from '../../AudioWaveform/AudioWaveform.module.scss'
 
 
-export default function Speed(props) {
+export default memo(function Speed(props) {
     let wavesurferObj = props.wavesurferObj
 	const [rate, setRate] = useState(1)
 
@@ -26,9 +26,9 @@ export default function Speed(props) {
 	}
 
     return (
-        <div className={AudioCSS.speed} onClick={handleSpeed}>
+        <section className={props.className} onClick={handleSpeed}>
             <img src={SpeedIcon} />
             <span>{rate}x</span>
-        </div>
+        </section>
     )
-}
+})
