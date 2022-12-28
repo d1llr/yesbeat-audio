@@ -14,6 +14,7 @@ import Speed from './Buttons/Speed';
 import Header from '../Header/Header';
 import Timings from './TimerComponent/Timings';
 import FullScreen from './FullScreenMode/FullScreen';
+import PeakCache from 'wavesurfer.js/src/peakcache.js'
 const AudioWaveform = React.memo(() => {
 	let props = {}
 	const src = "https://s3.eu-central-1.amazonaws.com/some-sprouts/Mindcrush.mp3";
@@ -24,6 +25,7 @@ const AudioWaveform = React.memo(() => {
 	const [rate, setRate] = useState(1)
 	const [currentTime, setCurrentTime] = useState()
 	const [maxTime, setMaxTime] = useState()
+	const [photoPath, setPhotoPath] = useState()
 	const [fullScreen, setfullScreen] = useState(() => {
 		if (window.innerWidth < 1500) {
 			return true
@@ -59,6 +61,7 @@ const AudioWaveform = React.memo(() => {
 					cursorColor: 'transparent',
 					fillParent: true,
 					rate: rate,
+					partialRender:true,
 					interact: true,
 				})
 			)
@@ -94,16 +97,20 @@ const AudioWaveform = React.memo(() => {
 		if (wavesurferObj) {
 			console.log(searchParams.get('name'));
 			searchParams.get('name') ? 
-				fetch(`https://test.yesbeat.ru/player_file.php?&data=${searchParams.get('name')}`)
+				fetch(`https://test.yesbeat.ru/player_file.php?&data=${searchParams.get('name').split(' ').join('+')}`
+				)
 				  .then(res => res.json())
 				  .then(
 					(result) => {
-						console.log(JSON.parse(result));
+
+						
+						console.log(result);
+						console.log(result.filename.slice(0,result.filename.length-8));
+						wavesurferObj.load('https://test.yesbeat.ru/'+result.filepath);
 					}
 				  )
 				:
 			console.log('Нет');
-			wavesurferObj.load(src);
 		}
 	}, [wavesurferObj]);
 
@@ -265,6 +272,7 @@ const AudioWaveform = React.memo(() => {
 			:
 			<section className={AudioCSS.waveform_container}>
 				<div className={pageLoad ? AudioCSS.loader : AudioCSS.loader_invisible}></div>
+				<img src = {test}/>
 				<Header src={src} />
 				<div className={AudioCSS.waveform_wrapper}>
 					<div className={AudioCSS.waveform_inner_wrapper}>
@@ -294,7 +302,7 @@ const AudioWaveform = React.memo(() => {
 						</div>
 
 					</div>
-					<Photo fullScreen={fullScreen} />
+					<Photo fullScreen={fullScreen} photoPath = {photoPath}/>
 					<Blur />
 				</div>
 				<div className={AudioCSS.all_controls}>
